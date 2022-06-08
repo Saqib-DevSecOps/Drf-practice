@@ -1,7 +1,7 @@
 from django.db.backends.base import validation
 from rest_framework import serializers
 
-from practice.models import Student
+from practice.models import Student, Song, Singer
 
 
 # class StudentSerializer(serializers.Serializer):
@@ -19,7 +19,7 @@ def start_with_s(value):
 
 
 class StudentSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=200,validators=[start_with_s])
+    name = serializers.CharField(max_length=200, validators=[start_with_s])
     email = serializers.EmailField(max_length=200)
     age = serializers.IntegerField()
 
@@ -46,3 +46,28 @@ class StudentSerializer(serializers.Serializer):
         if len(email) <= 5:
             raise serializers.ValidationError('enter more than 5 character in name')
         return data
+
+
+class SongSerializer(serializers.ModelSerializer):
+    # singer = serializers.StringRelatedField(many=True,read_only=True)
+    # singer = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    singer = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='singer-detail')
+
+
+# singer = serializers.SlugRelatedField(many=True,read_only=True,slug_field='name')
+# singer = serializers.HyperlinkedIdentityField(view_name='singer-detail')
+
+    class Meta:
+        model = Song
+        fields = ['id', 'title', 'duration', 'singer']
+
+
+# class SingerSerializer(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = Singer
+#         fields = ['id', 'name', 'song']
+
+class SingerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Singer
+        fields = ['id', 'song', 'name', ]

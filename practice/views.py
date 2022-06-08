@@ -8,8 +8,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
-from practice.models import Student
-from practice.serializers import StudentSerializer
+from practice.models import Student, Song, Singer
+from practice.serializers import StudentSerializer, SongSerializer, SingerSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
@@ -26,6 +26,8 @@ from rest_framework.authentication import BasicAuthentication, TokenAuthenticati
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
+
+
 def students(request):
     stu = Student.objects.all()
     serializer = StudentSerializer(stu, many=True)
@@ -345,7 +347,16 @@ class StudentsApi(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     authentication_classes = [JWTAuthentication]
-    filter_backends = [DjangoFilterBackend,SearchFilter]
-    filterset_fields = ['name','age']
-    search_fields = ['name','age']
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['name', 'age']
+    search_fields = ['name', 'age']
+
+
+class SongApi(viewsets.ModelViewSet):
+    queryset = Song.objects.all()
+    serializer_class = SongSerializer
+
+class SingerApi(viewsets.ModelViewSet):
+    queryset = Singer.objects.all()
+    serializer_class = SingerSerializer
 
